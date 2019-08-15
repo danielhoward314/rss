@@ -2,30 +2,23 @@ const path = require('path');
 const express = require('express');
 const compression = require('compression');
 const helmet = require('helmet');
+const cors = require('cors');
 const PORT = process.env.PORT || 8080;
 const app = express();
 module.exports = app;
 
 const createApp = () => {
-
   // compression middleware
   app.use(compression());
 
+  // helmet middleware for security
   app.use(helmet());
+
+  // enabling cors for whitelisted origins
+  app.use(cors());
 
   // static file-serving middleware
   app.use(express.static(path.join(__dirname, '..', 'public')));
-
-  // any remaining requests with an extension (.js, .css, etc.) send 404
-  // app.use((req, res, next) => {
-  //   if (path.extname(req.path).length) {
-  //     const err = new Error('Not found');
-  //     err.status = 404;
-  //     next(err);
-  //   } else {
-  //     next();
-  //   }
-  // });
 
   // sends index.html
   app.use('*', (req, res) => {
