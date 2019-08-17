@@ -2,12 +2,11 @@ import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import uuidv4 from 'uuid/v4';
 import GlobalStyle from './GlobalStyle';
-import Container from './Container';
 import Card from './Card';
-import AddFeed from './AddFeed';
+import AddFeed from './Workspace';
 import Spinner from './Spinner';
 import InfoMsg from './InfoMsg';
-import feed, {
+import {
   getFeeds, getFeedDetails, getUpdatedTuple, emitLoadStatus, LOAD_CONSTS
 } from '../store/feed';
 
@@ -33,8 +32,6 @@ class App extends Component {
 
   render() {
     let { feeds, feedDetails, loadStatus } = this.props;
-    console.log('feedDetails in App')
-    console.log(feedDetails)
     if (loadStatus === LOAD_CONSTS.UNASKED) {
         return (
           <Fragment>
@@ -76,8 +73,8 @@ class App extends Component {
         <Fragment>
           <GlobalStyle />
           <AddFeed userUuid={this.state.userUuid} />
-          {feedDetails.map((feedList) => {
-            return <Card feedList={feedList} />
+          {feedDetails.map((feedList, idx) => {
+            return <Card key={idx} feedList={feedList} />;
           })}
         </Fragment>
       );

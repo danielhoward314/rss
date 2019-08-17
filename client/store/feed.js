@@ -10,7 +10,7 @@ export const LOAD_CONSTS = {
   FAILED: 'FAILED',
   NO_DATA: 'NO_DATA'
 };
-let parser = new Parser();
+let parser = new Parser({ timeout: 6000 });
 /**
  * INITIAL STATE
  */
@@ -49,11 +49,9 @@ export const getFeedDetails = (feedsArr, rangeTuple) => async dispatch => {
     let rangedFeedsArr = feedsArr.slice(rangeTuple[0], rangeTuple[1]);
     let feedPromisesArr = rangedFeedsArr.map(async (feed) => {
       let rssJson = await parser.parseURL(CORS_PROXY + feed.url);
-      console.log(rssJson)
       return rssJson;
     });
     let feedDetailsArr = await Promise.all(feedPromisesArr);
-    console.log(feedDetailsArr)
     return dispatch(gotFeedDetails(feedDetailsArr));
   } catch (err) {
     console.error(err);
@@ -75,18 +73,26 @@ export const getUpdatedTuple = (tuple) => dispatch => {
 export const getFeeds = (uuid) => async dispatch => {
   try {
     const res = await axios.get(`/api/feeds/${uuid}`);
-    console.log(res.data)
     return dispatch(gotFeeds(res.data));
   } catch (err) {
     console.error(err);
   }
 };
 
-export const addFeed = (uuid, name, url) => async dispatch => {
+export const addFeed = (uuid, name, url) => dispatch => {
   try {
-    let feed = { userUuid: uuid, name, url };
-    const res = await axios.post('/api/feeds', feed);
-    return dispatch(addedFeed(res.data));
+    parser.parseURL((CORS_PROXY + url), async (err) => {
+      if (!err) {
+        let feedObj = { userUuid: uuid, name, url };
+        const res = await axios.post('/api/feeds', feedObj);
+        await dispatch(addedFeed(res.data));
+      } else {
+          await dispatch(emitLoadStatus(LOAD_CONSTS.FAILED));
+          setTimeout(() => {
+            window.location.reload();
+          }, 3000);
+      }
+    });
   } catch (err) {
     console.error(err);
   }
