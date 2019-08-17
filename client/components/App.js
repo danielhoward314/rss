@@ -1,67 +1,129 @@
-import React, { Component } from 'react';
-import axios from 'axios';
-import Parser from 'rss-parser';
+import React, { Component, Fragment } from 'react';
+import { connect } from 'react-redux';
+import uuidv4 from 'uuid/v4';
+import GlobalStyle from './GlobalStyle';
+import Container from './Container';
+import Card from './Card';
 import AddFeed from './AddFeed';
+import Spinner from './Spinner';
+import InfoMsg from './InfoMsg';
+import feed, {
+  getFeeds, getFeedDetails, getUpdatedTuple, emitLoadStatus, LOAD_CONSTS
+} from '../store/feed';
 
 class App extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
-    let startInt = window.localStorage.getItem('ordinal');
+    // initializing user either from localStorage or with defaults
+    const keyConst = 'univisionRssUuid';
+    let userUuid = null;
+    if (window.localStorage.getItem(keyConst) === null) {
+      userUuid = uuidv4();
+    } else {
+        userUuid = window.localStorage.getItem(keyConst);
+    }
     this.state = {
-      ordinal: +startInt || 0,
-      url: '',
-      feeds: []
+      userUuid
     };
-    this.parser = new Parser();
   }
 
-  handleChange = (evt) => {
-    this.setState({
-      [evt.target.name]: evt.target.value
-    });
-  }
-
-  handleSubmit = async (evt) => {
-    evt.preventDefault();
-    const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
-    window.localStorage.setItem(`feed${this.state.ordinal}`, this.state.url);
-    window.localStorage.setItem('ordinal', this.state.ordinal);
-    try {
-      // rss feed
-      let currentFeedUrl = window.localStorage.getItem(`feed${this.state.ordinal}`);
-      let feed = await this.parser.parseURL(CORS_PROXY + currentFeedUrl);
-      this.setState((state) => {
-        let nextOrdinal = ++state.ordinal;
-        return {
-          ordinal: nextOrdinal,
-          url: '',
-          name: '',
-          feeds: [...state.feeds, feed.items]
-        };
-      });
-    } catch (err) {
-      console.log(err);
-    }
-  }
-
-
-  async componentDidMount() {
-    let feedArrayLength = window.localStorage.getItem('ordinal');
-    if (feedArrayLength > 0) {
-      console.log(`feed array length ${feedArrayLength}`);
-      let i = 0;
-      while (i <= feedArrayLength) {
-            ++i;
-      }
-    }
+  componentDidMount() {
+    return this.props.onGetFeeds(this.state.userUuid, this.props.rangeTuple);
   }
 
   render() {
-    console.log(this.state.feeds)
-    return (
-      <AddFeed handleChange={this.handleChange} handleSubmit={(evt) => this.handleSubmit(evt)} />
-    );
+    let { feeds, feedDetails, loadStatus } = this.props;
+    console.log('feedDetails in App')
+    console.log(feedDetails)
+    if (loadStatus === LOAD_CONSTS.UNASKED) {
+        return (
+          <Fragment>
+            <GlobalStyle />
+            <InfoMsg
+            content="Welcome to the RSS feed app by Daniel Howard."
+            />
+          </Fragment>
+        );
+    } else if (!feeds.length && (loadStatus === LOAD_CONSTS.NO_DATA)) {
+        return (
+          <Fragment>
+            <GlobalStyle />
+            <AddFeed userUuid={this.state.userUuid} />
+            <InfoMsg
+            content={`Looks like you don't have any feeds yet.
+            Add some rss feeds and give them nicknames.`}
+            />
+          </Fragment>
+        );
+    } else if (loadStatus === LOAD_CONSTS.REQUESTED) {
+        return (
+          <Fragment>
+            <GlobalStyle />
+            <AddFeed userUuid={this.state.userUuid} />
+            <Spinner />
+          </Fragment>
+        );
+    } else if (loadStatus === LOAD_CONSTS.ADDING) {
+        return (
+          <Fragment>
+            <GlobalStyle />
+            <AddFeed userUuid={this.state.userUuid} />
+            <InfoMsg content="Adding to your feeds" />
+          </Fragment>
+        );
+    } else if (loadStatus === LOAD_CONSTS.SUCCEEDED) {
+      return (
+        <Fragment>
+          <GlobalStyle />
+          <AddFeed userUuid={this.state.userUuid} />
+          {feedDetails.map((feedList) => {
+            return <Card feedList={feedList} />
+          })}
+        </Fragment>
+      );
+    } else if (loadStatus === LOAD_CONSTS.FAILED) {
+      return (
+        <InfoMsg content='Something went wrong...' />
+      );
+    } else {
+      return (
+        <Fragment>
+          <GlobalStyle />
+          <AddFeed userUuid={this.state.userUuid} />
+          <InfoMsg
+          content={`Looks like you don't have any feeds yet.
+          Add some rss feeds and give them nicknames.`}
+          />
+        </Fragment>
+      );
+    }
   }
 }
 
-export default App;
+const mapState = ({ feedReducer }) => ({
+  loadStatus: feedReducer.loadStatus,
+  rangeTuple: feedReducer.rangeTuple,
+  feeds: feedReducer.feeds,
+  feedDetails: feedReducer.feedDetails
+});
+
+const mapDispatch = (dispatch) => ({
+  onGetFeeds: (uuid, rangeTuple) => {
+    dispatch(emitLoadStatus(LOAD_CONSTS.REQUESTED));
+    dispatch(getFeeds(uuid)).then(async action => {
+      if (!action.feeds.length) {
+        await dispatch(emitLoadStatus(LOAD_CONSTS.NO_DATA));
+        return action;
+      }
+      try {
+        await dispatch(getFeedDetails(action.feeds, rangeTuple));
+        dispatch(emitLoadStatus(LOAD_CONSTS.SUCCEEDED));
+      } catch (err) {
+          console.error(err);
+          dispatch(emitLoadStatus(LOAD_CONSTS.FAILED));
+      }
+    });
+  }
+});
+
+export default connect(mapState, mapDispatch)(App);
