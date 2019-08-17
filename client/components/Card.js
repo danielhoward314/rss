@@ -2,28 +2,36 @@ import React from 'react';
 import styled from 'styled-components';
 import CardContent from './CardContent';
 
-const Wrapper = styled.section`
-margin: 0 auto auto;
-width: 100%;
-max-width: '1050px';
-padding: 3em 1.5em 2em;
-flex-grow: 1;
-@media screen and (min-width: 40em) {
+const Item = styled.ul`
+  border-radius: 4px;
+  border: 1px solid palevioletred;
+  border-radius: 2px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 20px;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
+  flex-direction: column;
+  &:hover {
+    background: palevioletred;
+  }
+  transition: background 0.2s;
+  @media screen and (min-width: 40em) {
+    flex: 0 1 calc(32% - 1em);
+  }
 `;
 
-const Card = ({feedList}) => {
+
+const FeedHeader = styled.h2`
+  padding: 1em;
+  align-self: center;
+`;
+
+const Card = ({feed}) => {
   return (
-    <Wrapper>
-      {
-         feedList.map((feed, idx) => {
-          return <CardContent key={idx} items={feed.items} />;
-        })
-      }
-    </Wrapper>
+    <Item>
+      <FeedHeader>{feed.feedName}</FeedHeader>
+      <CardContent feed={feed} />
+    </Item>
   );
 };
 

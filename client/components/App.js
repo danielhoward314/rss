@@ -1,16 +1,16 @@
-import React, { Component, Fragment } from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import uuidv4 from 'uuid/v4';
 import GlobalStyle from './GlobalStyle';
-import Card from './Card';
-import AddFeed from './Workspace';
+import CardContainer from './CardContainer';
+import AddFeed from './AddFeed';
 import Spinner from './Spinner';
 import InfoMsg from './InfoMsg';
 import {
-  getFeeds, getFeedDetails, getUpdatedTuple, emitLoadStatus, LOAD_CONSTS
+  getFeeds, getFeedDetails, emitLoadStatus, LOAD_CONSTS
 } from '../store/feed';
 
-class App extends Component {
+class App extends PureComponent {
   constructor(props) {
     super(props);
     // initializing user either from localStorage or with defaults
@@ -45,7 +45,7 @@ class App extends Component {
         return (
           <Fragment>
             <GlobalStyle />
-            <AddFeed userUuid={this.state.userUuid} />
+            <AddFeed props={this.props} userUuid={this.state.userUuid} />
             <InfoMsg
             content={`Looks like you don't have any feeds yet.
             Add some rss feeds and give them nicknames.`}
@@ -56,7 +56,7 @@ class App extends Component {
         return (
           <Fragment>
             <GlobalStyle />
-            <AddFeed userUuid={this.state.userUuid} />
+            <AddFeed props={this.props} userUuid={this.state.userUuid} />
             <Spinner />
           </Fragment>
         );
@@ -64,29 +64,27 @@ class App extends Component {
         return (
           <Fragment>
             <GlobalStyle />
-            <AddFeed userUuid={this.state.userUuid} />
-            <InfoMsg content="Adding to your feeds" />
+            <AddFeed props={this.props} userUuid={this.state.userUuid} />
+            <InfoMsg content={`Fresh display of that new feed comin' right up.`} />
           </Fragment>
         );
     } else if (loadStatus === LOAD_CONSTS.SUCCEEDED) {
       return (
         <Fragment>
           <GlobalStyle />
-          <AddFeed userUuid={this.state.userUuid} />
-          {feedDetails.map((feedList, idx) => {
-            return <Card key={idx} feedList={feedList} />;
-          })}
+          <AddFeed props={this.props} userUuid={this.state.userUuid} />
+          <CardContainer feedDetails={feedDetails} />
         </Fragment>
       );
     } else if (loadStatus === LOAD_CONSTS.FAILED) {
       return (
-        <InfoMsg content='Something went wrong...' />
+        <InfoMsg content={`That url didn't work. Let's reload the page so you can try another.`} />
       );
     } else {
       return (
         <Fragment>
           <GlobalStyle />
-          <AddFeed userUuid={this.state.userUuid} />
+          <AddFeed props={this.props} userUuid={this.state.userUuid} />
           <InfoMsg
           content={`Looks like you don't have any feeds yet.
           Add some rss feeds and give them nicknames.`}

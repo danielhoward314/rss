@@ -30,9 +30,13 @@ const GlobalStyle = createGlobalStyle`
 
   @media screen and (min-width: 35em) {
     html {
-      margin-right: calc(-100vw + 100%);
       overflow-x: hidden;
     }
+  }
+
+  html, body, #root {
+    width: 100vw;
+    height: 100vh;
   }
 
   ol, ul, li {

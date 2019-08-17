@@ -18,7 +18,6 @@ const defaultState = {
   loadStatus: LOAD_CONSTS.UNASKED,
   feeds: [],
   feedDetails: [],
-  rangeTuple: [0, 6]
 };
 
 /**
@@ -28,7 +27,6 @@ const EMIT_LOAD_STATUS = 'EMIT_LOAD_STATUS';
 const GET_FEEDS = 'GET_FEEDS';
 const ADD_FEED = 'ADD_FEED';
 const GET_FEED_DETAILS = 'GET_FEED_DETAILS';
-const UPDATE_RANGE_TUPLE = 'UPDATE_RANGE_TUPLE';
 /**
  * ACTION CREATORS
  */
@@ -36,7 +34,6 @@ const emittedLoadStatus = loadStatus => ({type: EMIT_LOAD_STATUS, loadStatus});
 const gotFeeds = feeds => ({type: GET_FEEDS, feeds});
 const addedFeed = feed => ({type: ADD_FEED, feed});
 const gotFeedDetails = feedDetails => ({type: GET_FEED_DETAILS, feedDetails});
-const gotUpdatedTuple = updatedTuple => ({type: UPDATE_RANGE_TUPLE, updatedTuple});
 /**
  * THUNK CREATORS
  */
@@ -44,27 +41,17 @@ export const emitLoadStatus = loadStatus => dispatch => {
   return dispatch(emittedLoadStatus(loadStatus));
 };
 
-export const getFeedDetails = (feedsArr, rangeTuple) => async dispatch => {
+export const getFeedDetails = (feedsArr) => async dispatch => {
   try {
-    let rangedFeedsArr = feedsArr.slice(rangeTuple[0], rangeTuple[1]);
+    let rangedFeedsArr = feedsArr.slice(0, 6);
     let feedPromisesArr = rangedFeedsArr.map(async (feed) => {
       let rssJson = await parser.parseURL(CORS_PROXY + feed.url);
-      return rssJson;
+      let feedNameProp = {feedName: feed.name};
+      let mergedJson = Object.assign(feedNameProp, rssJson);
+      return mergedJson;
     });
     let feedDetailsArr = await Promise.all(feedPromisesArr);
     return dispatch(gotFeedDetails(feedDetailsArr));
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-export const getUpdatedTuple = (tuple) => dispatch => {
-  try {
-    let updatedTuple = [
-      (6 + tuple[0]),
-      (6 + tuple[1])
-    ];
-    return dispatch(gotUpdatedTuple(updatedTuple));
   } catch (err) {
     console.error(err);
   }
@@ -79,13 +66,23 @@ export const getFeeds = (uuid) => async dispatch => {
   }
 };
 
-export const addFeed = (uuid, name, url) => dispatch => {
+export const addFeed = (uuid, name, url) => async dispatch => {
+  await dispatch(emitLoadStatus(LOAD_CONSTS.ADDING));
   try {
     parser.parseURL((CORS_PROXY + url), async (err) => {
       if (!err) {
         let feedObj = { userUuid: uuid, name, url };
         const res = await axios.post('/api/feeds', feedObj);
         await dispatch(addedFeed(res.data));
+        await dispatch(getFeeds(uuid)).then(async (action) => {
+          try {
+            await dispatch(getFeedDetails(action.feeds));
+            await dispatch(emitLoadStatus(LOAD_CONSTS.SUCCEEDED));
+          } catch (error) {
+              console.error(error);
+              await dispatch(emitLoadStatus(LOAD_CONSTS.FAILED));
+          }
+        });
       } else {
           await dispatch(emitLoadStatus(LOAD_CONSTS.FAILED));
           setTimeout(() => {
@@ -124,13 +121,7 @@ export default function(state = defaultState, action) {
     case GET_FEED_DETAILS: {
       return {
         ...state,
-        feedDetails: [...state.feedDetails, action.feedDetails]
-      };
-    }
-    case UPDATE_RANGE_TUPLE: {
-      return {
-        ...state,
-        rangeTuple: action.updatedTuple
+        feedDetails: action.feedDetails
       };
     }
     default:
