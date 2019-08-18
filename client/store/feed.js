@@ -27,6 +27,7 @@ const EMIT_LOAD_STATUS = 'EMIT_LOAD_STATUS';
 const GET_FEEDS = 'GET_FEEDS';
 const ADD_FEED = 'ADD_FEED';
 const GET_FEED_DETAILS = 'GET_FEED_DETAILS';
+const LOAD_MORE_FEEDS = 'LOAD_MORE_FEEDS';
 /**
  * ACTION CREATORS
  */
@@ -34,11 +35,21 @@ const emittedLoadStatus = loadStatus => ({type: EMIT_LOAD_STATUS, loadStatus});
 const gotFeeds = feeds => ({type: GET_FEEDS, feeds});
 const addedFeed = feed => ({type: ADD_FEED, feed});
 const gotFeedDetails = feedDetails => ({type: GET_FEED_DETAILS, feedDetails});
+const loadedMoreFeeds = feedDetails => ({type: LOAD_MORE_FEEDS, feedDetails});
 /**
  * THUNK CREATORS
  */
 export const emitLoadStatus = loadStatus => dispatch => {
   return dispatch(emittedLoadStatus(loadStatus));
+};
+
+export const getFeeds = (uuid) => async dispatch => {
+  try {
+    const res = await axios.get(`/api/feeds/${uuid}`);
+    return dispatch(gotFeeds(res.data));
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 export const getFeedDetails = (feedsArr) => async dispatch => {
@@ -57,10 +68,20 @@ export const getFeedDetails = (feedsArr) => async dispatch => {
   }
 };
 
-export const getFeeds = (uuid) => async dispatch => {
+export const loadMoreFeeds = (feeds, feedDetails, sliceStart) => async dispatch => {
   try {
-    const res = await axios.get(`/api/feeds/${uuid}`);
-    return dispatch(gotFeeds(res.data));
+    let sliceEnd = (sliceStart + 3);
+    let rangedFeedsArr = feeds.slice(sliceStart, sliceEnd);
+    console.log('rangedFeedsArr');
+    console.log(rangedFeedsArr);
+    let feedPromisesArr = rangedFeedsArr.map(async (feed) => {
+      let rssJson = await parser.parseURL(CORS_PROXY + feed.url);
+      let feedNameProp = {feedName: feed.name};
+      let mergedJson = Object.assign(feedNameProp, rssJson);
+      return mergedJson;
+    });
+    let feedDetailsArr = await Promise.all(feedPromisesArr);
+    return dispatch(loadedMoreFeeds(feedDetailsArr));
   } catch (err) {
     console.error(err);
   }
@@ -99,6 +120,8 @@ export const addFeed = (uuid, name, url) => async dispatch => {
  * REDUCER
  */
 export default function(state = defaultState, action) {
+  console.log('reducer')
+  console.log(state.feedDetails.concat(action.feedDetails))
   switch (action.type) {
     case EMIT_LOAD_STATUS: {
       return {
@@ -122,6 +145,12 @@ export default function(state = defaultState, action) {
       return {
         ...state,
         feedDetails: action.feedDetails
+      };
+    }
+    case LOAD_MORE_FEEDS: {
+      return {
+        ...state,
+        feedDetails: state.feedDetails.concat(action.feedDetails)
       };
     }
     default:

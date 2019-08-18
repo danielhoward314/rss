@@ -97,7 +97,6 @@ class App extends PureComponent {
 
 const mapState = ({ feedReducer }) => ({
   loadStatus: feedReducer.loadStatus,
-  rangeTuple: feedReducer.rangeTuple,
   feeds: feedReducer.feeds,
   feedDetails: feedReducer.feedDetails
 });

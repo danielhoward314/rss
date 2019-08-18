@@ -18,7 +18,7 @@ flex-grow: 1;
 
 const CardContainer = ({feedDetails}) => {
   return (
-    <Wrapper>
+    <Wrapper >
       {feedDetails.map((feed) => {
         return <Card key={uuidv4()} feed={feed} />;
       })}

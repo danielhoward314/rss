@@ -15,7 +15,6 @@
   "author": "Daniel Howard",
   "license": "ISC",
   "dependencies": {
-    "@material-ui/core": "^4.3.2",
     "axios": "^0.19.0",
     "compression": "^1.7.4",
     "connect-session-sequelize": "^6.0.0",
@@ -23,8 +22,10 @@
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "helmet": "^3.20.0",
+    "lodash": "^4.17.15",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
+    "raf-schd": "^4.0.2",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-redux": "^7.1.0",
