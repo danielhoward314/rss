@@ -2,7 +2,12 @@ import React from 'react';
 import styled from 'styled-components';
 
 const Wrapper = styled.div`
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: ${props => props.theme.primaryBackground};
+  height: 100%;
+  width: 100%;
 `;
 
 const Msg = styled.p`

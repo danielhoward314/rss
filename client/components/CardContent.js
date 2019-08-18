@@ -2,12 +2,13 @@ import React from 'react';
 import uuidv4 from 'uuid/v4';
 import styled from 'styled-components';
 
-const LinkRow = styled.li`
-  padding: 0.5em;
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: flex-start;
 `;
 
 const Link = styled.a`
-  color: black;
+  color: ${props => props.theme.primaryBackground};
   &:hover {
     color: ${props => props.theme.primaryBackground};
   }
@@ -20,12 +21,12 @@ const Link = styled.a`
 `;
 
 const CardContent = ({feed}) => {
-  let latestFeed = feed.items.slice(0, 14);
+  let latestFeed = feed.items.slice(0, 5);
   return latestFeed.map((item) => {
     return (
-      <LinkRow key={uuidv4()}>
+      <Wrapper key={uuidv4()} >
         <Link href={item.link}>{item.title}</Link>
-      </LinkRow>
+      </Wrapper>
     );
   });
 };

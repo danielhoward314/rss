@@ -4,20 +4,18 @@ import styled from 'styled-components';
 import CardContent from './CardContent';
 
 const Item = styled.ul`
-  background-color: ${props => props.theme.primaryBackground};
-  border: solid 1px ${props => props.theme.primaryBackground};
-  ::placeholder {
-    color: silver;
-  }
+  background: ${props => props.theme.secondaryBackground};
+  border: solid 5px ${props => props.theme.primaryBackground};
   &:hover {
-    background: ${props => props.theme.secondaryHover};
-    border: solid 1px ${props => props.theme.secondaryBackground};
-    color: white;
-    ::placeholder {
-      color: white;
+    background: ${props => props.theme.primaryHover};
+    border: solid 5px ${props => props.theme.secondaryHover};
+    h2 {
+      border-bottom: solid 5px ${props => props.theme.secondaryBackground};
+    }
+    h2, a {
+      color: ${props => props.theme.secondaryBackground};
     }
   }
-  z-index: 10;
   border-radius: 4px;
   border-radius: 2px;
   margin-left: auto;
@@ -32,11 +30,16 @@ const Item = styled.ul`
 `;
 
 const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
 `;
 
 const Header = styled.h2`
+  color: ${props => props.theme.primaryBackground};
+  border-bottom: solid 5px ${props => props.theme.primaryBackground};
   font-size: 1.5em;
-  padding: 1em;
+  padding: 0.5em;
+  margin-bottom: 0.5em;
   align-self: center;
 `;
 

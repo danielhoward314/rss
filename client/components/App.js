@@ -79,9 +79,12 @@ function App({ onGetFeeds }) {
       </Fragment>
     );
   } else if ((loadStatus === LOAD_CONSTS.FAILED) || (loadStatus === LOAD_CONSTS.DUPLICATE)) {
-    return (
-      <InfoMsg content={`That url didn't work. Either it's a bum feed or you've already got it. Let's bring you home so you can try another.`} />
-    );
+      return (
+        <Fragment>
+          <GlobalStyle />
+          <InfoMsg content={`That url didn't work. Either it's a bum feed or you've already got it. Let's bring you home so you can try another.`} />
+        </Fragment>
+      );
   } else {
     return (
       <Fragment>
