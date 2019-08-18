@@ -111,6 +111,8 @@ function AddFeed({userUuid, onAddFeed}) {
     evt.preventDefault();
     try {
       await onAddFeed(userUuid, name, url, feeds);
+      setUrl('');
+      setName('');
     } catch (err) {
       console.log(err);
     }

@@ -24,6 +24,7 @@ const Item = styled.ul`
 const FeedHeader = styled.h2`
   padding: 1em;
   align-self: center;
+  background: ${props => props.theme.background};
 `;
 
 const Card = ({feed}) => {

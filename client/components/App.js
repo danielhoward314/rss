@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector, connect } from 'react-redux';
-
 import uuidv4 from 'uuid/v4';
 
 import GlobalStyle from './GlobalStyle';

@@ -8,3 +8,7 @@ From terminal run `npm run start-dev`
 Open up a browser and go to `http://localhost:8080/`
 
 This link has a lot of urls to test https://feed.mikle.com/support/rss-feed-sources-online-news-sites/
+
+React version must be 16.9 or less. Version 17 has breaking changes for deprecated life cycle hooks.
+I don't use any of the deprecated hooks, but the infinite scroll npm package used here does use a
+deprecated life cycle method.
