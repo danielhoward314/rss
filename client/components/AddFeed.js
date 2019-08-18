@@ -5,8 +5,9 @@ import styled from 'styled-components';
 import { addFeed } from '../store/feed';
 
 const Nav = styled.div`
+  background: ${props => props.theme.primaryBackground};
+  z-index: -5;
   width: 100%;
-  background-color: #fff;
   border-bottom: 1px solid rgba(0, 0, 0, 0.0975);
   display: flex;
 `;
@@ -28,21 +29,31 @@ const Form = styled.form`
 `;
 
 const UrlInput = styled.input`
+  background-color: ${props => props.theme.secondaryBackground};
+  border: solid 1px ${props => props.theme.secondaryBackground};
+  ::placeholder {
+    color: silver;
+  }
+  &:hover {
+    background: ${props => props.theme.secondaryHover};
+    border: solid 1px ${props => props.theme.secondaryBackground};
+    color: white;
+    ::placeholder {
+      color: white;
+    }
+  }
+  z-index: 10;
   flex: 4;
   font-size: 16px;
   width: 100%;
-  border: solid 1px #dbdbdb;
   border-radius: 3px;
-  color: #262626;
   margin: 0 1em;
   padding: 7px 33px;
   border-radius: 3px;
-  color: #999;
   cursor: text;
   font-size: 14px;
   font-weight: 300;
-  text-align: center;
-  background: #fafafa;
+  text-align: left;
   @media screen and (max-width: 27em) {
     margin-bottom: 1em;
     width: 93%;
@@ -54,21 +65,30 @@ const UrlInput = styled.input`
 `;
 
 const NameInput = styled.input`
+  background-color: ${props => props.theme.secondaryBackground};
+  border: solid 1px ${props => props.theme.secondaryBackground};
+  ::placeholder {
+    color: silver;
+  }
+  &:hover {
+    background: ${props => props.theme.secondaryHover};
+    border: solid 1px ${props => props.theme.secondaryBackground};
+    color: white;
+    ::placeholder {
+      color: white;
+    }
+  }
   flex: 2;
   font-size: 16px;
   width: 100%;
-  border: solid 1px #dbdbdb;
   border-radius: 3px;
-  color: #262626;
   margin: 0 1em;
   padding: 7px 33px;
   border-radius: 3px;
-  color: #999;
   cursor: text;
   font-size: 14px;
   font-weight: 300;
-  text-align: center;
-  background: #fafafa;
+  text-align: left;
   @media screen and (max-width: 27em) {
     margin-bottom: 1em;
     width: 93%;
@@ -80,20 +100,21 @@ const NameInput = styled.input`
 `;
 
 const Button = styled.button`
+  background-color: ${props => props.theme.secondaryBackground};
+  border: solid 1px ${props => props.theme.secondaryHover};
+  color: silver;
+  &:hover {
+    background: ${props => props.theme.secondaryHover};
+    border: solid 1px ${props => props.theme.secondaryBackground};
+    color: white;
+  }
   flex: 1;
   cursor: pointer;
-  background: transparent;
   font-size: 16px;
   border-radius: 3px;
-  color: palevioletred;
-  border: 2px solid palevioletred;
   margin: 0 1em;
   padding: 0.25em 1em;
   transition: 0.5s all ease-out;
-  &:hover {
-    background-color: palevioletred;
-    color: white;
-  }
 `;
 
 function AddFeed({userUuid, onAddFeed}) {

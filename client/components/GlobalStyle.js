@@ -37,6 +37,8 @@ const GlobalStyle = createGlobalStyle`
   html, body, #root {
     width: 100vw;
     height: 100vh;
+    z-index: -100;
+    background: ${props => props.theme.secondaryBackground};
   }
 
   ol, ul, li {
@@ -63,7 +65,6 @@ const GlobalStyle = createGlobalStyle`
   }
 
   body {
-    background: white;
     line-height: 1;
     font-size: 100%;
     font-variant-ligatures: none;
@@ -83,8 +84,6 @@ const GlobalStyle = createGlobalStyle`
   input {
     font-family: inherit;
     font-size: inherit;
-    background: none;
-    border: none;
     outline: none;
     appearance: none;
     border-radius: 0;

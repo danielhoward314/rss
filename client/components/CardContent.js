@@ -7,6 +7,10 @@ const LinkRow = styled.li`
 `;
 
 const Link = styled.a`
+  color: black;
+  &:hover {
+    color: ${props => props.theme.primaryBackground};
+  }
   text-decoration: none;
   &:hover {
     text-decoration: underline;

@@ -9,16 +9,18 @@ import Spinner from './Spinner';
 import { loadMoreFeeds } from '../store/feed';
 
 const Wrapper = styled.section`
-margin: 0 auto auto;
-width: 100%;
-max-width: '1050px';
-padding: 3em 1.5em 2em;
-flex-grow: 1;
-@media screen and (min-width: 40em) {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-}
+  z-index: -10;
+  margin: 0 auto auto;
+  width: 100%;
+  background: ${props => props.theme.secondaryBackground};
+  max-width: '1050px';
+  padding: 3em 1.5em 2em;
+  flex-grow: 1;
+  @media screen and (min-width: 40em) {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
 `;
 
 const CardContainer = ({onLoadMoreFeeds}) => {
