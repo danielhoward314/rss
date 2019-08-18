@@ -6,3 +6,5 @@ Create environment variable and two postgres databases with these three commands
   createdb $MY_APP_NAME-test
 From terminal run `npm run start-dev`
 Open up a browser and go to `http://localhost:8080/`
+
+This link has a lot of urls to test https://feed.mikle.com/support/rss-feed-sources-online-news-sites/

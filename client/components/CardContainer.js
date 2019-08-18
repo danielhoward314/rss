@@ -1,7 +1,12 @@
 import React from 'react';
+import { useSelector, connect } from 'react-redux';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
 import uuidv4 from 'uuid/v4';
+
 import Card from './Card';
+import Spinner from './Spinner';
+import { loadMoreFeeds } from '../store/feed';
 
 const Wrapper = styled.section`
 margin: 0 auto auto;
@@ -16,14 +21,31 @@ flex-grow: 1;
 }
 `;
 
-const CardContainer = ({feedDetails}) => {
+const CardContainer = ({onLoadMoreFeeds}) => {
+  const feedReducer = useSelector(state => state.feedReducer);
+  const feeds = feedReducer.feeds;
+  const feedDetails = feedReducer.feedDetails;
   return (
-    <Wrapper >
-      {feedDetails.map((feed) => {
-        return <Card key={uuidv4()} feed={feed} />;
-      })}
-    </Wrapper>
+    <InfiniteScroll
+        dataLength={feedDetails.length}
+        next={() => onLoadMoreFeeds(feeds, feedDetails)}
+        hasMore={(feeds.length > feedDetails.length)}
+        loader={<Spinner />}
+      >
+        <Wrapper>
+          {feedDetails.map((feed) => {
+            return <Card key={uuidv4()} feed={feed} />;
+          })}
+        </Wrapper>
+    </InfiniteScroll>
   );
 };
 
-export default CardContainer;
+
+const mapDispatch = (dispatch) => ({
+  onLoadMoreFeeds: (feeds, feedDetails) => {
+    return dispatch(loadMoreFeeds(feeds, feedDetails));
+  }
+});
+
+export default connect(null, mapDispatch)(CardContainer);

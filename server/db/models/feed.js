@@ -9,12 +9,10 @@ const Feed = db.define('feed', {
   },
   name: {
     type: Sequelize.STRING,
-    unique: true,
     allowNull: false
   },
   url: {
     type: Sequelize.STRING,
-    unique: true,
     allowNull: false
   },
 });

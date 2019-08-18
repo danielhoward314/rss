@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import { useSelector, connect } from 'react-redux';
 import styled from 'styled-components';
 
 import { addFeed } from '../store/feed';
@@ -96,7 +96,9 @@ const Button = styled.button`
   }
 `;
 
-function AddFeed(props) {
+function AddFeed({userUuid, onAddFeed}) {
+  const feedReducer = useSelector(state => state.feedReducer);
+  const feeds = feedReducer.feeds;
   const [url, setUrl] = useState('');
   const [name, setName] = useState('');
   function handleUrlChange(evt) {
@@ -108,7 +110,7 @@ function AddFeed(props) {
   let handleSubmit = async (evt) => {
     evt.preventDefault();
     try {
-      await props.onAddFeed(props.userUuid, name, url);
+      await onAddFeed(userUuid, name, url, feeds);
     } catch (err) {
       console.log(err);
     }
@@ -127,8 +129,8 @@ function AddFeed(props) {
 }
 
 const mapDispatch = (dispatch) => ({
-  onAddFeed: async (uuid, name, url) => {
-    await dispatch(addFeed(uuid, name, url));
+  onAddFeed: async (uuid, name, url, feeds) => {
+    await dispatch(addFeed(uuid, name, url, feeds));
   }
 });
 

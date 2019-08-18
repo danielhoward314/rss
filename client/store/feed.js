@@ -1,12 +1,15 @@
 import axios from 'axios';
 import Parser from 'rss-parser';
 
+import hasDuplicateValue from '../util/hasDuplicateValue';
+
 const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
 export const LOAD_CONSTS = {
   UNASKED: 'UNASKED',
   REQUESTED: 'REQUESTED',
   SUCCEEDED: 'SUCCEEDED',
   ADDING: 'ADDING',
+  DUPLICATE: 'DUPLICATE',
   FAILED: 'FAILED',
   NO_DATA: 'NO_DATA'
 };
@@ -17,7 +20,7 @@ let parser = new Parser({ timeout: 6000 });
 const defaultState = {
   loadStatus: LOAD_CONSTS.UNASKED,
   feeds: [],
-  feedDetails: [],
+  feedDetails: []
 };
 
 /**
@@ -68,31 +71,41 @@ export const getFeedDetails = (feedsArr) => async dispatch => {
   }
 };
 
-export const loadMoreFeeds = (feeds, feedDetails, sliceStart) => async dispatch => {
+export const loadMoreFeeds = (feeds, feedDetails) => async dispatch => {
   try {
+    let sliceStart = feedDetails.length;
     let sliceEnd = (sliceStart + 3);
     let rangedFeedsArr = feeds.slice(sliceStart, sliceEnd);
-    console.log('rangedFeedsArr');
-    console.log(rangedFeedsArr);
-    let feedPromisesArr = rangedFeedsArr.map(async (feed) => {
-      let rssJson = await parser.parseURL(CORS_PROXY + feed.url);
-      let feedNameProp = {feedName: feed.name};
-      let mergedJson = Object.assign(feedNameProp, rssJson);
-      return mergedJson;
-    });
-    let feedDetailsArr = await Promise.all(feedPromisesArr);
-    return dispatch(loadedMoreFeeds(feedDetailsArr));
+    if (rangedFeedsArr.length) {
+      let feedPromisesArr = rangedFeedsArr.map(async (feed) => {
+        let rssJson = await parser.parseURL(CORS_PROXY + feed.url);
+        let feedNameProp = {feedName: feed.name};
+        let mergedJson = Object.assign(feedNameProp, rssJson);
+        return mergedJson;
+      });
+      let feedDetailsArr = await Promise.all(feedPromisesArr);
+      return dispatch(loadedMoreFeeds(feedDetailsArr));
+    } else {
+        return dispatch(loadedMoreFeeds([]));
+    }
   } catch (err) {
     console.error(err);
   }
 };
 
-export const addFeed = (uuid, name, url) => async dispatch => {
+export const addFeed = (uuid, name, url, feeds) => async dispatch => {
   await dispatch(emitLoadStatus(LOAD_CONSTS.ADDING));
+  let feedObj = { userUuid: uuid, name, url };
+  let isDuplicate = hasDuplicateValue('url', feeds, feedObj);
+  if (isDuplicate) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 3000);
+    return dispatch(emitLoadStatus(LOAD_CONSTS.DUPLICATE));
+  }
   try {
     parser.parseURL((CORS_PROXY + url), async (err) => {
       if (!err) {
-        let feedObj = { userUuid: uuid, name, url };
         const res = await axios.post('/api/feeds', feedObj);
         await dispatch(addedFeed(res.data));
         await dispatch(getFeeds(uuid)).then(async (action) => {
@@ -120,8 +133,6 @@ export const addFeed = (uuid, name, url) => async dispatch => {
  * REDUCER
  */
 export default function(state = defaultState, action) {
-  console.log('reducer')
-  console.log(state.feedDetails.concat(action.feedDetails))
   switch (action.type) {
     case EMIT_LOAD_STATUS: {
       return {

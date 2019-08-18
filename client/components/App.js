@@ -1,11 +1,12 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'react-redux';
 import uuidv4 from 'uuid/v4';
+
 import GlobalStyle from './GlobalStyle';
 import CardContainer from './CardContainer';
 import AddFeed from './AddFeed';
-import Spinner from './Spinner';
 import InfoMsg from './InfoMsg';
+import Spinner from './Spinner';
 import {
   getFeeds, getFeedDetails, emitLoadStatus, LOAD_CONSTS
 } from '../store/feed';
@@ -18,6 +19,7 @@ class App extends PureComponent {
     let userUuid = null;
     if (window.localStorage.getItem(keyConst) === null) {
       userUuid = uuidv4();
+      window.localStorage.setItem(keyConst, userUuid);
     } else {
         userUuid = window.localStorage.getItem(keyConst);
     }
@@ -72,13 +74,13 @@ class App extends PureComponent {
       return (
         <Fragment>
           <GlobalStyle />
-          <AddFeed props={this.props} userUuid={this.state.userUuid} />
+          <AddFeed userUuid={this.state.userUuid} />
           <CardContainer feedDetails={feedDetails} />
         </Fragment>
       );
-    } else if (loadStatus === LOAD_CONSTS.FAILED) {
+    } else if ((loadStatus === LOAD_CONSTS.FAILED) || (loadStatus === LOAD_CONSTS.DUPLICATE)) {
       return (
-        <InfoMsg content={`That url didn't work. Let's reload the page so you can try another.`} />
+        <InfoMsg content={`That url didn't work. Either it's a bum feed or you've already got it. Let's bring you home so you can try another.`} />
       );
     } else {
       return (
@@ -102,7 +104,7 @@ const mapState = ({ feedReducer }) => ({
 });
 
 const mapDispatch = (dispatch) => ({
-  onGetFeeds: (uuid, rangeTuple) => {
+  onGetFeeds: (uuid) => {
     dispatch(emitLoadStatus(LOAD_CONSTS.REQUESTED));
     dispatch(getFeeds(uuid)).then(async action => {
       if (!action.feeds.length) {
@@ -110,7 +112,7 @@ const mapDispatch = (dispatch) => ({
         return action;
       }
       try {
-        await dispatch(getFeedDetails(action.feeds, rangeTuple));
+        await dispatch(getFeedDetails(action.feeds));
         dispatch(emitLoadStatus(LOAD_CONSTS.SUCCEEDED));
       } catch (err) {
           console.error(err);
