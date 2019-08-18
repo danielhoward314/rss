@@ -100,7 +100,7 @@ export const addFeed = (uuid, name, url, feeds) => async dispatch => {
   if (isDuplicate) {
     setTimeout(() => {
       window.location.reload();
-    }, 3000);
+    }, 1500);
     return dispatch(emitLoadStatus(LOAD_CONSTS.DUPLICATE));
   }
   try {
@@ -121,7 +121,7 @@ export const addFeed = (uuid, name, url, feeds) => async dispatch => {
           await dispatch(emitLoadStatus(LOAD_CONSTS.FAILED));
           setTimeout(() => {
             window.location.reload();
-          }, 3000);
+          }, 1500);
       }
     });
   } catch (err) {
