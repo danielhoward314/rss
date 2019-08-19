@@ -34,3 +34,12 @@ React version must be 16.9 or less. Version 17 has breaking changes for deprecat
 I don't use any of the deprecated hooks, but the infinite scroll npm package used here does use a
 deprecated life cycle method.
 
+Should you face a ownership problem with the deploy, script:
+1. cd into the script directory.
+2. run this command `chmod 755 deploy`
+
+Should you get this error...
+
+> error: insufficient permission for adding an object to repository database .git/objects
+
+...this [article] (https://medium.com/@darkrubyist/how-to-fix-git-push-error-insufficient-permission-for-adding-an-object-to-repository-database-git-53d7dc9649e2) gives a one command fix
