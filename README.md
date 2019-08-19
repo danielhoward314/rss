@@ -11,8 +11,9 @@ Instructions for installing and running the code locally:
 \* export MY_APP_NAME=<name-param-in-package-json>
 \* createdb $MY_APP_NAME
 \* createdb $MY_APP_NAME-test
-4. From terminal run `npm run start-dev`
+4. From terminal run `npm run start-dev`.
 5. Open up a browser and go to http://localhost:8080/
+6. Run tests with `npm run test`.
 
 
 Instructions for using the deploy script:
