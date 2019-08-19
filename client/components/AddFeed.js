@@ -31,10 +31,13 @@ const Form = styled.form`
 const UrlInput = styled.input`
   background-color: ${props => props.theme.secondaryBackground};
   border: solid 1px ${props => props.theme.secondaryBackground};
+  color: silver;
   ::placeholder {
     color: silver;
   }
-  &:hover {
+  &:hover,
+  &:active,
+  &:focus {
     background: ${props => props.theme.secondaryHover};
     border: solid 1px ${props => props.theme.secondaryBackground};
     color: white;
@@ -67,10 +70,13 @@ const UrlInput = styled.input`
 const NameInput = styled.input`
   background-color: ${props => props.theme.secondaryBackground};
   border: solid 1px ${props => props.theme.secondaryBackground};
+  color: silver;
   ::placeholder {
     color: silver;
   }
-  &:hover {
+  &:hover,
+  &:active,
+  &:focus {
     background: ${props => props.theme.secondaryHover};
     border: solid 1px ${props => props.theme.secondaryBackground};
     color: white;
