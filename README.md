@@ -1,7 +1,7 @@
 # Univision RSS Feed
 ## Created by Daniel Howard
 
-The code is deployed [here]. (https://univision-rss.herokuapp.com/)
+The code is deployed [here](https://univision-rss.herokuapp.com/)
 
 Instructions for installing and running the code locally:
 
@@ -25,9 +25,9 @@ Instructions for using the deploy script:
 
 TEST IT OUT!
 
-Find lots of urls to test [here] (https://feed.mikle.com/support/rss-feed-sources-online-news-sites/)
+Find lots of urls to test [here](https://feed.mikle.com/support/rss-feed-sources-online-news-sites/)
 
-Postgres installation instructions [here] (http://postgresapp.com/). A full-featured installation of postgres that includes the psql command line tool is what allows us to run the `createdb` command above. Be sure to follow the set up your $PATH link and follow the instructions there. You may need to update your shell profile.
+Postgres installation instructions [here](http://postgresapp.com/). A full-featured installation of postgres that includes the psql command line tool is what allows us to run the `createdb` command above. Be sure to follow the set up your $PATH link and follow the instructions there. You may need to update your shell profile.
 
 NOTE ABOUT REACT VERSION DEPENDENCY:
 React version must be 16.9 or less. Version 17 has breaking changes for deprecated life cycle hooks.
@@ -42,4 +42,4 @@ Should you get this error...
 
 > error: insufficient permission for adding an object to repository database .git/objects
 
-...this [article] (https://medium.com/@darkrubyist/how-to-fix-git-push-error-insufficient-permission-for-adding-an-object-to-repository-database-git-53d7dc9649e2) gives a one command fix
+...this [article](https://medium.com/@darkrubyist/how-to-fix-git-push-error-insufficient-permission-for-adding-an-object-to-repository-database-git-53d7dc9649e2) gives a one command fix
