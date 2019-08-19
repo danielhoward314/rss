@@ -26,19 +26,19 @@ const defaultState = {
 /**
  * ACTION TYPES
  */
-const EMIT_LOAD_STATUS = 'EMIT_LOAD_STATUS';
-const GET_FEEDS = 'GET_FEEDS';
-const ADD_FEED = 'ADD_FEED';
-const GET_FEED_DETAILS = 'GET_FEED_DETAILS';
-const LOAD_MORE_FEEDS = 'LOAD_MORE_FEEDS';
+export const EMIT_LOAD_STATUS = 'EMIT_LOAD_STATUS';
+export const GET_FEEDS = 'GET_FEEDS';
+export const ADD_FEED = 'ADD_FEED';
+export const GET_FEED_DETAILS = 'GET_FEED_DETAILS';
+export const LOAD_MORE_FEEDS = 'LOAD_MORE_FEEDS';
 /**
  * ACTION CREATORS
  */
-const emittedLoadStatus = loadStatus => ({type: EMIT_LOAD_STATUS, loadStatus});
-const gotFeeds = feeds => ({type: GET_FEEDS, feeds});
-const addedFeed = feed => ({type: ADD_FEED, feed});
-const gotFeedDetails = feedDetails => ({type: GET_FEED_DETAILS, feedDetails});
-const loadedMoreFeeds = feedDetails => ({type: LOAD_MORE_FEEDS, feedDetails});
+export const emittedLoadStatus = loadStatus => ({type: EMIT_LOAD_STATUS, loadStatus});
+export const gotFeeds = feeds => ({type: GET_FEEDS, feeds});
+export const addedFeed = feed => ({type: ADD_FEED, feed});
+export const gotFeedDetails = feedDetails => ({type: GET_FEED_DETAILS, feedDetails});
+export const loadedMoreFeeds = feedDetails => ({type: LOAD_MORE_FEEDS, feedDetails});
 /**
  * THUNK CREATORS
  */
