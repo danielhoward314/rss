@@ -1,7 +1,9 @@
 # Univision RSS Feed
 ## Created by Daniel Howard
 
-Instructions for installing and running the code:
+The code is deployed [here]. (https://univision-rss.herokuapp.com/)
+
+Instructions for installing and running the code locally:
 
 1. Clone the repo
 2. `cd` into the repo and run `npm install`
@@ -12,10 +14,22 @@ Instructions for installing and running the code:
 4. From terminal run `npm run start-dev`
 5. Open up a browser and go to http://localhost:8080/
 
-[This link has a lot of urls to test] (https://feed.mikle.com/support/rss-feed-sources-online-news-sites/)
 
-If you're on a Mac, you can head right over to http://postgresapp.com/ and follow the instructions there to get a full-featured installation of postgres, including the psql command line tool. Be sure to follow the set up your $PATH link and follow the instructions there. Note that if you need to update your shell profile, bash uses ~/.bash_profile and zsh uses ~/.zshrc.
+Instructions for using the deploy script:
 
+1.Set up the Heroku command line tools.
+2. Run `heroku login` and enter your credentials (or set them up if you don't have them).
+3. run `heroku create <MY_APP_NAME>`.
+4. run `heroku addons:create heroku-postgresql:hobby-dev' to provision a postgres database to your heroku dyno. you can also do this through the heroku ui.
+
+TEST IT OUT!
+
+Find lots of urls to test [here] (https://feed.mikle.com/support/rss-feed-sources-online-news-sites/)
+
+Postgres installation instructions [here] (http://postgresapp.com/). A full-featured installation of postgres that includes the psql command line tool is what allows us to run the `createdb` command above. Be sure to follow the set up your $PATH link and follow the instructions there. You may need to update your shell profile.
+
+NOTE ABOUT REACT VERSION DEPENDENCY:
 React version must be 16.9 or less. Version 17 has breaking changes for deprecated life cycle hooks.
 I don't use any of the deprecated hooks, but the infinite scroll npm package used here does use a
 deprecated life cycle method.
+
